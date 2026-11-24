@@ -1,111 +1,486 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Student Management System</title>
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f1f5f9;
+            font-family: 'Segoe UI', sans-serif;
+            color: #1e293b;
+        }
+
+        .navbar-custom {
+            background: #12336b;
+            color: white;
+            padding: 20px 0;
+        }
+
+        .page-title {
+            font-size: 25px;
+            font-weight: 750;
+            margin: 0;
+        }
+
+        .subtitle {
+            color: #cbd5e1;
+            font-size: 13px;
+            margin: 5px 0 0;
+        }
+
+        .main-container {
+            max-width: 1350px;
+            margin: 30px auto;
+        }
+
+        .custom-card {
+            border: 0;
+            border-radius: 16px;
+            box-shadow: 0 5px 25px rgba(0,0,0,.055);
+            overflow: hidden;
+            background: white;
+        }
+
+        .card-heading {
+            font-weight: 700;
+            font-size: 19px;
+            margin-bottom: 6px;
+        }
+
+        .section-heading {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2563eb;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+            margin: 22px 0 16px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        .form-control, .form-select {
+            padding: 11px 13px;
+            border: 1px solid #dbe3ed;
+            border-radius: 9px;
+            background: #f8fafc;
+        }
+
+        .form-control:focus, .form-select:focus {
+            background: white;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px #dbeafe;
+        }
+
+        .save-btn {
+            padding: 13px;
+            border: 0;
+            border-radius: 10px;
+            font-weight: 700;
+            background: #16a34a;
+            color: white;
+            width: 100%;
+        }
+
+        .save-btn:hover { background: #15803d; }
+
+        .info-box {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            padding: 13px;
+            border-radius: 10px;
+            color: #1d4ed8;
+            font-size: 13px;
+        }
+
+        .table thead th {
+            background: #eaf1fd;
+            color: #334155;
+            font-size: 13px;
+            padding: 15px;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            padding: 14px;
+            vertical-align: middle;
+            font-size: 14px;
+        }
+
+        .table tbody tr:hover { background: #f8fafc; }
+
+        .action-btn {
+            padding: 7px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #2563eb;
+            box-shadow: 0 3px 15px rgba(0,0,0,.04);
+        }
+
+        .stat-card h3 {
+            font-weight: 750;
+            margin-bottom: 3px;
+        }
+
+        .stat-card p {
+            margin: 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        @media (max-width: 768px) {
+            .main-container { margin-top: 18px; }
+            .page-title { font-size: 20px; }
+            .custom-card .card-body { padding: 20px !important; }
+        }
+    </style>
 </head>
 
-<body class="bg-light">
+<body>
 
-<div class="container mt-5">
+<header class="navbar-custom">
+    <div class="container-fluid px-4">
+        <h1 class="page-title">🎓 Student Management System</h1>
+        <p class="subtitle">Student Registration • Admission • Hostel Management</p>
+    </div>
+</header>
 
-    <div class="card shadow">
+<main class="container-fluid main-container px-3 px-md-4">
 
-        <div class="card-header bg-primary text-white text-center">
-            <h2>Student Management System</h2>
+    <div class="row g-3 mb-4">
+
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="stat-card">
+                <h3 id="totalStudents">0</h3>
+                <p>Total Students Displayed</p>
+            </div>
         </div>
 
-        <div class="card-body">
+        <div class="col-12 col-sm-6 col-lg-4">
+            <div class="stat-card" style="border-color:#16a34a">
+                <h3>Active</h3>
+                <p>Student Registration Portal</p>
+            </div>
+        </div>
 
-            <!-- Student Form -->
-            <form id="studentForm">
+        <div class="col-12 col-lg-4">
+            <div class="stat-card" style="border-color:#f59e0b">
+                <h3>CRUD</h3>
+                <p>Create • Read • Update • Delete</p>
+            </div>
+        </div>
 
-                <div class="mb-3">
-                    <label>Name</label>
-                    <input type="text" class="form-control" name="name" required>
-                </div>
+    </div>
 
-                <div class="mb-3">
-                    <label>Age</label>
-                    <input type="number" class="form-control" name="age" required>
-                </div>
+    <div class="row g-4">
 
-                <div class="mb-3">
-                    <label>Course</label>
-                    <input type="text" class="form-control" name="course" required>
-                </div>
+        <!-- STUDENT REGISTRATION FORM -->
+        <div class="col-12 col-xl-5">
 
-                <div class="mb-3">
-                    <label>Email</label>
-                    <input type="email" class="form-control" name="email" required>
-                </div>
+            <div class="card custom-card">
+                <div class="card-body p-4">
 
-                <button type="submit" id="saveBtn" class="btn btn-success">
-                    Save Student
-                </button>
+                    <h3 class="card-heading">Student Registration</h3>
+                    <p class="text-secondary small">
+                        Enter student and admission details
+                    </p>
 
-            </form>
+                    <form id="studentForm">
 
-            <hr>
+                        <h5 class="section-heading">01 — Personal Information</h5>
 
-            <h3>Student List</h3>
+                        <div class="row g-3">
 
-            <table class="table table-bordered table-hover">
+                            <div class="col-12">
+                                <label class="form-label">Full Name *</label>
+                                <input type="text"
+                                       name="name"
+                                       class="form-control"
+                                       placeholder="Enter student name"
+                                       required>
+                            </div>
 
-                <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Course</th>
-                    <th>Email</th>
-                    <th>Action</th>
-                </tr>
-                </thead>
+                            <div class="col-md-6">
+                                <label class="form-label">Age *</label>
+                                <input type="number"
+                                       name="age"
+                                       class="form-control"
+                                       placeholder="Age"
+                                       required>
+                            </div>
 
-                <tbody>
+                            <div class="col-md-6">
+                                <label class="form-label">Email *</label>
+                                <input type="email"
+                                       name="email"
+                                       class="form-control"
+                                       placeholder="Email address"
+                                       required>
+                            </div>
 
-                <tr th:each="student : ${students}">
+                            <div class="col-12">
+                                <label class="form-label">Course *</label>
+                                <input type="text"
+                                       name="course"
+                                       class="form-control"
+                                       placeholder="B.Tech / BCA / MBA"
+                                       required>
+                            </div>
 
-                    <td th:text="${student.id}"></td>
-                    <td th:text="${student.name}"></td>
-                    <td th:text="${student.age}"></td>
-                    <td th:text="${student.course}"></td>
-                    <td th:text="${student.email}"></td>
+                        </div>
 
-                    <td>
+                        <h5 class="section-heading">02 — Admission Details</h5>
 
-                        <button class="btn btn-warning btn-sm"
-                                th:attr="data-id=${student.id}"
-                                onclick="editStudent(this)">
-                            Edit
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label">Admission Date</label>
+                                <input type="date"
+                                       id="admissionDate"
+                                       class="form-control">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Academic Year</label>
+                                <select id="academicYear" class="form-select">
+                                    <option value="">Select Year</option>
+                                    <option>2026-2027</option>
+                                    <option>2027-2028</option>
+                                    <option>2028-2029</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Admission Type</label>
+                                <select id="admissionType" class="form-select">
+                                    <option value="">Select Admission Type</option>
+                                    <option>Regular</option>
+                                    <option>Direct Admission</option>
+                                    <option>Lateral Entry</option>
+                                    <option>Transfer Student</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <h5 class="section-heading">03 — Address Information</h5>
+
+                        <div class="row g-3">
+
+                            <div class="col-12">
+                                <label class="form-label">Permanent Address</label>
+                                <textarea id="address"
+                                          class="form-control"
+                                          rows="2"
+                                          placeholder="Enter full address"></textarea>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">City</label>
+                                <input type="text"
+                                       id="city"
+                                       class="form-control"
+                                       placeholder="City">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">State</label>
+                                <input type="text"
+                                       id="state"
+                                       class="form-control"
+                                       placeholder="State">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">PIN Code</label>
+                                <input type="text"
+                                       id="pinCode"
+                                       class="form-control"
+                                       placeholder="PIN Code"
+                                       maxlength="6"
+                                       inputmode="numeric">
+                            </div>
+
+                        </div>
+
+                        <h5 class="section-heading">04 — Hostel Allocation</h5>
+
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label">Hostel Required?</label>
+                                <select id="hostelRequired"
+                                        class="form-select"
+                                        onchange="toggleHostel()">
+                                    <option value="no">No</option>
+                                    <option value="yes">Yes</option>
+                                </select>
+                            </div>
+
+                            <div id="hostelDetails" class="col-12 d-none">
+                                <div class="row g-3">
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Hostel Block</label>
+                                        <select id="hostelBlock" class="form-select">
+                                            <option value="">Select Hostel</option>
+                                            <option>Hostel A</option>
+                                            <option>Hostel B</option>
+                                            <option>Hostel C</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label">Room Type</label>
+                                        <select id="roomType" class="form-select">
+                                            <option value="">Select Room</option>
+                                            <option>Single Sharing</option>
+                                            <option>Double Sharing</option>
+                                            <option>Triple Sharing</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="info-box mt-4">
+                            ℹ️ Admission, address and hostel fields are
+                            frontend-only. Existing student details
+                            will be saved through the current backend.
+                        </div>
+
+                        <button type="submit"
+                                id="saveBtn"
+                                class="save-btn mt-4">
+                            Save Student
                         </button>
 
-                        <button class="btn btn-danger btn-sm"
-                                th:attr="data-id=${student.id}"
-                                onclick="deleteStudent(this.dataset.id)">
-                            Delete
-                        </button>
+                    </form>
 
-                    </td>
+                </div>
+            </div>
 
-                </tr>
+        </div>
 
-                </tbody>
+        <!-- STUDENT RECORDS -->
+        <div class="col-12 col-xl-7">
 
-            </table>
+            <div class="card custom-card">
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div>
+                            <h3 class="card-heading">Student Records</h3>
+                            <p class="text-secondary small mb-0">
+                                View, edit and manage registered students
+                            </p>
+                        </div>
+
+                        <span class="badge bg-primary p-2">
+                            Student Directory
+                        </span>
+                    </div>
+
+                    <hr>
+
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="studentTable">
+
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Course</th>
+                                <th>Email</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <tr th:each="student : ${students}">
+
+                                <td th:text="${student.id}"></td>
+                                <td th:text="${student.name}"></td>
+                                <td th:text="${student.age}"></td>
+                                <td th:text="${student.course}"></td>
+                                <td th:text="${student.email}"></td>
+
+                                <td>
+                                    <div class="d-flex gap-2">
+
+                                        <button class="btn btn-warning btn-sm action-btn"
+                                                th:attr="data-id=${student.id}"
+                                                onclick="editStudent(this)">
+                                            Edit
+                                        </button>
+
+                                        <button class="btn btn-danger btn-sm action-btn"
+                                                th:attr="data-id=${student.id}"
+                                                onclick="deleteStudent(this.dataset.id)">
+                                            Delete
+                                        </button>
+
+                                    </div>
+                                </td>
+
+                            </tr>
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                </div>
+            </div>
 
         </div>
 
     </div>
 
-</div>
+    <p class="text-center text-secondary small mt-4">
+        Student Management System | Java Spring Boot
+    </p>
+
+</main>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
+<!-- Existing backend-related JavaScript -->
 <script src="/js/script.js"></script>
+
+<!-- Frontend-only UI interactions -->
+<script>
+    function toggleHostel() {
+        const required = document.getElementById('hostelRequired').value;
+        const details = document.getElementById('hostelDetails');
+
+        details.classList.toggle('d-none', required !== 'yes');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const table = document.getElementById('studentTable');
+        const count = table.querySelectorAll('tbody tr').length;
+
+        document.getElementById('totalStudents').textContent = count;
+    });
+</script>
 
 </body>
 </html>
